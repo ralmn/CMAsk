@@ -1,0 +1,23 @@
+{% extends('skeleton.html') %}
+
+{% block content %}
+    <h1>{{ vote.name }}</h1>
+
+    <ul>
+        {% for opt in vote.options %}
+            <li>{{ opt.name }}(<span id="option-{{ opt.slug() }}">{{ opt.value }}</span>)</li>
+        {% endfor %}
+    </ul>
+
+
+
+
+{% endblock %}
+
+{% block js_extra %}
+    <script>
+        $(document).ready(function(){
+
+        });
+    </script>
+{% endblock %}

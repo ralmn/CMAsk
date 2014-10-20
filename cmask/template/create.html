@@ -5,13 +5,50 @@
 
     <div id="home">
         <h1>CMAsk</h1>
-        <form method="post" action="{{ url_for('.create') }}">
+        <form id="create_form" method="post" action="{{ url_for('.create') }}">
             <dl>
                 {{ render_field(form.name) }}
                 {{ render_field(form.personalized) }}
+            </dl>
+            <dl id="personalized_input">
+                <label for="perso1">Choix 1 </label><input type="text" class="input_perso" name="perso1" id="perso1"/>
             </dl>
             <p><input type="submit" value="Creer">
         </form>
 
     </div>
 {%endblock%}
+
+
+{% block js_extra %}
+    <script>
+        $(document).ready(function(){
+            $('#create_form').find('input[name="personalized"]').change(function(){
+                if(this.checked){
+                    $('#personalized_input').show();
+                }else{
+                    $('#personalized_input').hide();
+                }
+            })
+            $(document).on("keydown",'.input_perso:last',function(){
+                console.log($(this).val());
+                if($(this).val() != ''){
+                    console.log('ok? ');
+                    l =  $('.input_perso').length +1;
+                    $input = $('<input type="texte">');
+                    $input.attr('id', 'perso' + l);
+                    $input.attr('name', 'perso' + l);
+                    $input.addClass('input_perso');
+                    $label = $('<label>');
+                    $label.attr('for', 'perso' + l);
+                    $label.text('Choix ' + l);
+                    $div = $('<div>');
+                    $div.append($label);
+                    $div.append($input);
+                    $("#personalized_input").append($div)
+
+                }
+            })
+        });
+    </script>
+{% endblock %}

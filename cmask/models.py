@@ -18,6 +18,9 @@ class VoteOption(db.Model):
     vote_id = db.Column(db.Integer, db.ForeignKey('vote.id'))
     vote = db.relationship('Vote', backref='options')
 
+    def slug(self):
+        return self.name.replace(' ', '-')
+
     def __repr__(self):
         return '<VoteOption %s>' % self.name
 

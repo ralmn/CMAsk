@@ -5,7 +5,7 @@
     <title>CMAsk</title>
     <link rel="stylesheet/less" type="text/css" href="{{ url_for('.static', filename='css/style.less') }}" />
     <script src="{{ url_for('.static', filename='js/less.min.js') }}"></script>
-
+    <script src="{{ url_for('.static', filename='js/jquery-2.1.1.min.js') }}"></script>
 </head>
 <body>
 <header>
@@ -30,6 +30,9 @@
 
 
 
+{% block js_extra %}
+
+{% endblock %}
 
 </body>
 </html>
