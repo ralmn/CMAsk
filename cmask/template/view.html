@@ -1,0 +1,13 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends('skeleton.html') %}
+{% block content %}
+    <div id="home">
+        <h1>{{vote.name}}</h1>
+         
+            {% for voteO in vote.options %}
+                    <a href="{{ url_for('.vote', id=vote.id, option=voteO.id)}}">{{voteO.name}}</a>
+            {% endfor %}
+         
+    </div>
+
+{%endblock%} 

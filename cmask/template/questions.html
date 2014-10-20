@@ -1,0 +1,14 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends('skeleton.html') %}
+{% block content %}
+    <div id="home">
+        <h1>CMAsk</h1>
+        
+        <ul>
+                {% for vote in votes %}
+                        <li><a href="{{ url_for('.view', id=vote.id)}}">{{vote.name}}({{vote.id}})</a></li>
+                {% endfor %}
+        <ul>
+    </div>
+
+{%endblock%} 

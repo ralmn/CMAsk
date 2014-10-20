@@ -1,0 +1,17 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends('skeleton.html') %}
+{% block content %}
+
+
+    <div id="home">
+        <h1>CMAsk</h1>
+        <form method="post" action="{{ url_for('.create') }}">
+            <dl>
+                {{ render_field(form.name) }}
+                {{ render_field(form.personalized) }}
+            </dl>
+            <p><input type="submit" value="Creer">
+        </form>
+
+    </div>
+{%endblock%}

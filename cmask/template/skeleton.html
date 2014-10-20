@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>CMAsk</title>
+    <link rel="stylesheet/less" type="text/css" href="{{ url_for('.static', filename='css/style.less') }}" />
+    <script src="{{ url_for('.static', filename='js/less.min.js') }}"></script>
+
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('views.create') }}">Creer question</a></li>
+            <li><a href="{{ url_for('views.questions') }}">Questions</a></li>
+            <li><a href="">CMAsk</a></li>
+            <li><a href="">Inscription</a></li>
+            <li><a href="">Connexion</a></li>
+        </ul>
+        <div class="clear"></div>
+    </nav>
+</header>
+
+<div class="content">
+
+    {% block content %}
+    {%endblock%}
+
+</div>
+
+
+
+
+</body>
+</html>
