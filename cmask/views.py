@@ -1,5 +1,5 @@
 from cmask.form import VoteForm
-from app import db, redis
+from app import db, redis, app
 from flask import Blueprint, request, redirect, url_for
 from flask.templating import render_template
 from cmask.models import Vote, VoteOption
@@ -68,26 +68,46 @@ def questions():
 @mod.route('/<id>')
 def view(id):
     vote = Vote.query.filter_by(id=id).first_or_404()
-    
+
+    response = app.make_response(redirect(url_for('.result', id=id)))
+    cookie = ('vote-'+id) in request.cookies
+    print('cookie=',request.cookies, cookie)
+
+    if cookie:
+        return redirect(url_for('.result', id=id))
+
     return render_template('view.html', **locals())
 
 
 @mod.route('/<id>/vote/<option>')
 def vote(id, option):
+
+
+
     db.session.flush()
     voteOption = VoteOption.query.filter_by(id=option).first_or_404()
-    voteOption.value = voteOption.value +1
-    db.session.commit()
 
-    message = {'id':id,'slug':voteOption.slug(),'value':voteOption.value}
-    print(message)
-    redis.publish(REDIS_CHAN, message)
+    response = app.make_response(redirect(url_for('.result', id=id)))
+    cookie = ('vote-'+id) in request.cookies
+    print('cookie=',request.cookies, cookie)
 
-    
-    return redirect(url_for('.result', id=id))
+    if not cookie:
+        voteOption.value = voteOption.value +1
+        db.session.commit()
+        print(voteOption.vote.name.encode('utf-8'))
+        message = {'id':str(id),'slug':str(voteOption.slug()),'value':voteOption.value}
+        print(message)
+        redis.publish(REDIS_CHAN, message)
+
+        response.set_cookie('vote-' + str(id), voteOption.slug())
+    return response
+
+
 
 @mod.route('/<id>/result')
 def result(id): 
     vote = Vote.query.filter_by(id=id).first_or_404()
-    
+
+    legendTemplate = "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+
     return render_template('result.html', **locals())

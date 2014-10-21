@@ -9,15 +9,99 @@
         {% endfor %}
     </ul>
 
+    <canvas id="myChart" width="400" height="400"></canvas>
+
 
 
 
 {% endblock %}
 
 {% block js_extra %}
+    <script src="{{ url_for('.static', filename='js/Chart.min.js') }}"></script>
     <script>
+        String.prototype.replaceAll = function (find, replace) {
+            var str = this ;
+            return str.replace(new RegExp(find, 'g'), replace);
+        };
         $(document).ready(function(){
+            //Build WebSocket
+            ws = new WebSocket('ws://127.0.0.1:8000/ws/{{ vote.id }}');
+            ws.onopen = function(){
+                console.log('Open WS')
+            }
+            ws.onclose = function(){
+                console.log('Close ws')
+            }
+
+            var slugs = {};
+            //Chart
+            var data = [];
+
+            var options = {
+                //Boolean - Whether we should show a stroke on each segment
+                segmentShowStroke : true,
+                //String - The colour of each segment stroke
+                segmentStrokeColor : "#fff",
+                //Number - The width of each segment stroke
+                segmentStrokeWidth : 2,
+                //Number - The percentage of the chart that we cut out of the middle
+                percentageInnerCutout : 0, // This is 0 for Pie charts
+                //Number - Amount of animation steps
+                animationSteps : 100,
+                //String - Animation easing effect
+                animationEasing : "easeOutBounce",
+                //Boolean - Whether we animate the rotation of the Doughnut
+                animateRotate : false,
+                //Boolean - Whether we animate scaling the Doughnut from the centre
+                animateScale : false,
+                legendTemplate: '{{ legendTemplate|safe }}'
+            };
+
+
+            var ctx = document.getElementById("myChart").getContext("2d");
+            console.log(ctx);
+            function getRandomColor() {
+                var letters = '0123456789ABCDEF'.split('');
+                var color = '#';
+                for (var i = 0; i < 6; i++ ) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+
+            {% for opt in vote.options %}
+                oData = {label:"{{ opt.name }}", value:{{ opt.value }}, color:getRandomColor(), highlight:getRandomColor(), name:"{{ opt.slug() }}" };
+                slugs["{{ opt.slug() }}"] = "{{ opt.name }}";
+                data.push(oData);
+            {% endfor %}
+
+            console.log(data);
+            var myPieChart = new Chart(ctx).Pie(data,options);
+            console.log(myPieChart);
+
+            //WebSocket Packet
+            ws.onmessage = function(packet){
+                strData = packet['data'];
+                strData = strData.replaceAll("'",'"');
+                data = jQuery.parseJSON(strData);
+                if(data !== undefined){
+                    slug = data['slug'];
+                    id = "#option-" + slug;
+                    $(id).each(function(){
+                        $(this).text(data['value']);
+                         for (i in myPieChart.segments){
+                             s = myPieChart.segments[i];
+                             if (slugs[data['slug']] == s.label){
+                                 s.value = data['value'];
+                                 myPieChart.update();
+                             }
+                         }
+
+                    });
+                }
+            }
 
         });
+
     </script>
 {% endblock %}
