@@ -1,6 +1,7 @@
 from cmask.form import VoteForm
 from app import db, redis, app
 from flask import Blueprint, request, redirect, url_for
+from flask.ext.login import current_user
 from flask.templating import render_template
 from cmask.models import Vote, VoteOption
 from settings import REDIS_CHAN
@@ -15,6 +16,8 @@ def index():
 
 @mod.route('/create', methods=['get', 'post'])
 def create():
+    if not current_user.is_authenticated() or not current_user.can_create():
+        return redirect(url_for('.questions'))
 
     form = VoteForm()
     print(request.method)

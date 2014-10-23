@@ -3,19 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>CMAsk</title>
-    <link rel="stylesheet/less" type="text/css" href="{{ url_for('.static', filename='css/style.less') }}" />
-    <script src="{{ url_for('.static', filename='js/less.min.js') }}"></script>
-    <script src="{{ url_for('.static', filename='js/jquery-2.1.1.min.js') }}"></script>
+{#    <link rel="stylesheet" type="text/css" href="{{ url_for('views.static', filename='css/foundation.min.css') }}" />#}
+    <link rel="stylesheet/less" type="text/css" href="{{ url_for('views.static', filename='css/style.less') }}" />
+    <script src="{{ url_for('views.static', filename='js/less.min.js') }}"></script>
+    <script src="{{ url_for('views.static', filename='js/jquery-2.1.1.min.js') }}"></script>
 </head>
 <body>
 <header>
     <nav>
+        <a href='{{ url_for('views.index') }}' class="title">CMAsk</a>
         <ul>
-            <li><a href="{{ url_for('views.create') }}">Creer question</a></li>
+            {% if current_user.is_authenticated() and current_user.can_create() %}
+                <li><a href="{{ url_for('views.create') }}">Creer question</a></li>
+            {% endif %}
             <li><a href="{{ url_for('views.questions') }}">Questions</a></li>
-            <li><a href="">CMAsk</a></li>
-            <li><a href="">Inscription</a></li>
-            <li><a href="">Connexion</a></li>
+            {% if  current_user.is_authenticated() %}
+                <li class="nav-right"><a href="">{{ current_user.username }}</a></li>
+                <li class="nav-right"><a href="{{ url_for('user.logout') }}">Déconnexion</a></li>
+            {% else %}
+                <li class="nav-right" ><a href="{{ url_for('user.login') }}">Connexion</a></li>
+            {% endif %}
         </ul>
         <div class="clear"></div>
     </nav>
@@ -24,14 +31,25 @@
 <div class="content">
 
     {% block content %}
+
     {%endblock%}
 
 </div>
 
 
 
-{% block js_extra %}
+<footer>
+    <p>©2014 - <a href="">Mathieu | Ralmn</a> </p>
+</footer>
 
+{% block js_extra %}
+    <script>
+    $(document).ready(function(){
+         if($(document).height() < screen.availHeight){
+             $('footer').addClass('forced')
+         }
+    });
+    </script>
 {% endblock %}
 
 </body>

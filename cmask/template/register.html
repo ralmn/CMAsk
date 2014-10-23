@@ -1,0 +1,43 @@
+{% extends('skeleton.html') %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block content %}
+
+
+    <div class="panel">
+
+        <div class="panel">
+            <h1>Inscription</h1>
+            {% if error %}
+                <div data-alert class="alert-box alert">
+                    {{ error }}
+                    <a href="#" class="close">&times;</a>
+                </div>
+
+            {% endif %}
+
+            <form action="{{ url_for('user.register') }}" method="post">
+
+                 {{ render_field(form.username) }}
+                 {{ render_field(form.email) }}
+                 {{ render_field(form.password) }}
+                 {{ render_field(form.retype_password) }}
+{#                {{ form.username() }}#}
+{#                {{ form.email.label }}#}
+{#                {{ form.email(type="email") }}#}
+{#                {{ form.password.label }}#}
+{#                {{ form.password() }}#}
+{#                {{ form.retype_password.label }}#}
+{#                {{ form.retype_password() }}#}
+                {{ form.hidden_tag()  }}
+
+                <input class="button" type="submit">
+
+            </form>
+        </div>
+
+
+
+
+
+{% endblock %}

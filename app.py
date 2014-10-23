@@ -1,6 +1,8 @@
 import ast
 from flask import Flask
-from flask.ext.script import Manager, Command
+from flask.ext.login import LoginManager
+from flask.ext.mail import Mail
+from flask.ext.script import Manager, Command, Server
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask_sockets import Sockets
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -81,31 +83,31 @@ redis = redis.from_url(settings.BROKER_URL)
 
 manager = Manager(app)
 
-class RunServer(Command):
-    def run(self):
-        app.run(port=5000, debug=True)
+server = Server(host="0.0.0.0", port=5000, use_debugger=True, use_reloader=True)
 
-manager.add_command('runserver', RunServer)
+manager.add_command('runserver', server)
 
+mail = Mail(app)                                # Initialize Flask-Mail
 
 vote_backend = VoteBackend()
 vote_backend.start()
+
+loginManager = LoginManager(app=app)
+
 
 import cmask.socket
 
 if __name__ == '__main__' or __name__ == "uwsgi_file_cmask":
 
-
+    from cmask import models
+    models.user_manager.init_app(app)
 
     #Declare views
     from cmask.views import mod as modViews
     app.register_blueprint(modViews)
 
-
     #Declare models
     db.init_app(app)
-
-    from cmask import models
 
 
     migrate = Migrate(app, db)
