@@ -232,3 +232,52 @@ label {
   width: 400px;
   height: 400px;
 }
+@media all and (max-width: 865px) {
+  header nav {
+    width: 100%;
+    display: inline-block;
+    padding-bottom: 15px;
+  }
+  header nav .title {
+    float: none;
+    text-align: center;
+    margin: 0 auto;
+    display: inline-block;
+    width: 100%;
+    max-width: 100%;
+  }
+  header nav ul {
+    display: block;
+    float: none;
+    text-align: center;
+    margin: 0 auto;
+  }
+  header nav ul li {
+    margin: 0;
+    float: none;
+    display: block;
+  }
+  header nav ul li.nav-right {
+    float: none;
+    display: block;
+  }
+  .content #home h1.vote-name {
+    font-size: 1.5em;
+  }
+  .content #home .options {
+    font-size: 1em;
+  }
+  .content .bottom-right {
+    position: relative;
+    display: inline-block;
+    float: right;
+    margin-bottom: 30px;
+  }
+  footer {
+    font-size: 0.5em;
+    height: auto;
+  }
+  footer.forced {
+    position: relative;
+  }
+}

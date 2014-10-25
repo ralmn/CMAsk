@@ -2,7 +2,7 @@
 {% extends('skeleton.html') %}
 {% block content %}
     <div id="home">
-        <h1>{{vote.name}}</h1>
+        <h1 class="vote-name">{{vote.name}}</h1>
         <div class="option-div">
             {% for voteO in vote.options %}
                 <a class="options" href="{{ url_for('.vote', id=vote.id, option=voteO.id)}}">{{voteO.name}}</a>
@@ -15,6 +15,9 @@
 
     <div class="bottom-right">
         <a class="btn red" href="{{ url_for('.result',id=vote.id) }}">Result</a>
+        <div class="clear"></div>
     </div>
+
+    <div class="clear"></div>
 
 {%endblock%} 
