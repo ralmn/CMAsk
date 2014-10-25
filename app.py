@@ -101,7 +101,7 @@ loginManager = LoginManager(app=app)
 
 
 class AdminCommand(Command):
-    
+
     option_list = (
             Option('--addadmin', '-a', dest='addname'),
     )
@@ -140,6 +140,8 @@ if __name__ == '__main__' or __name__ == "uwsgi_file_cmask":
     miv = MyIndexView(template="admin_index.html")
     admin = Admin(app, index_view=miv)
     admin.add_view(MyAdminView(models.User, db.session))
+    admin.add_view(MyAdminView(models.Vote, db.session))
+    admin.add_view(MyAdminView(models.VoteOption, db.session))
 
 
     migrate = Migrate(app, db)
