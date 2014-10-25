@@ -75,8 +75,22 @@ class VoteBackend(object):
         gevent.spawn(self.run)
 
 app = Flask(__name__)
+
+
 app.config.from_object(settings)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////home/ralmn/questionLive.db'
+
+
+#Configuration
+app.config['USER_ENABLE_USERNAME']        = True              # Register and Login with username
+app.config['USER_ENABLE_EMAIL']           = True              # Register with email
+app.config['USER_ENABLE_CONFIRM_EMAIL']   = True              # Require email confirmation
+app.config['USER_ENABLE_CHANGE_USERNAME'] = True
+app.config['USER_ENABLE_CHANGE_PASSWORD'] = True
+app.config['USER_ENABLE_FORGOT_PASSWORD'] = True
+app.config['USER_AFTER_LOGIN_ENDPOINT']   = 'views.index'
+app.config['USER_LOGIN_TEMPLATE']         = "login.html"
+app.config['USER_REGISTER_TEMPLATE']      = "register.html"
+
 db = SQLAlchemy(app)
 
 sockets = Sockets(app)
