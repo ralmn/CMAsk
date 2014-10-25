@@ -1,8 +1,10 @@
 import ast
 from flask import Flask
+from flask.ext.admin import Admin
+from flask.ext.babel import Babel
 from flask.ext.login import LoginManager
 from flask.ext.mail import Mail
-from flask.ext.script import Manager, Command, Server
+from flask.ext.script import Manager, Command, Server, Option
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask_sockets import Sockets
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -84,10 +86,13 @@ redis = redis.from_url(settings.BROKER_URL)
 manager = Manager(app)
 
 server = Server(host="0.0.0.0", port=5000, use_debugger=True, use_reloader=True)
+serverProd = Server(host="0.0.0.0", port=5000, use_debugger=False, use_reloader=False)
 
 manager.add_command('runserver', server)
+manager.add_command('runserverprod', serverProd)
 
 mail = Mail(app)                                # Initialize Flask-Mail
+babel = Babel(app)                              # Initialize Flask-Babel
 
 vote_backend = VoteBackend()
 vote_backend.start()
@@ -95,9 +100,30 @@ vote_backend.start()
 loginManager = LoginManager(app=app)
 
 
+class AdminCommand(Command):
+    
+    option_list = (
+            Option('--addadmin', '-a', dest='addname'),
+    )
+    def run(self, addname = None):
+        if addname is not None:
+            from cmask.models import User
+            user = User.query.filter_by(name=addname).first()
+            if user is not None:
+                user.admin = True
+                db.session.commit()
+                print("%s is now admin" % user.username)
+            else:
+                print('Not any user find for name %s' % addname)
+
+manager.add_command("admin", AdminCommand)
+
+
 import cmask.socket
 
 if __name__ == '__main__' or __name__ == "uwsgi_file_cmask":
+
+
 
     from cmask import models
     models.user_manager.init_app(app)
@@ -109,6 +135,12 @@ if __name__ == '__main__' or __name__ == "uwsgi_file_cmask":
     #Declare models
     db.init_app(app)
 
+    from cmask.admin import MyIndexView, MyAdminView
+
+    miv = MyIndexView(template="admin_index.html")
+    admin = Admin(app, index_view=miv)
+    admin.add_view(MyAdminView(models.User, db.session))
+
 
     migrate = Migrate(app, db)
     #migrate.init_app(app, db)
@@ -117,7 +149,7 @@ if __name__ == '__main__' or __name__ == "uwsgi_file_cmask":
 
     #Init
     app.debug=True
-    manager.run(default_command='runserver')
+    manager.run(default_command='runserverprod')
     #app.run(port=5000, debug=True)
 
 

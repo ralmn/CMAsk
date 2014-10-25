@@ -36,6 +36,7 @@ class User(db.Model, UserMixin):
     confirmed_at = db.Column(db.DateTime(), nullable=True)
     active = db.Column(db.Boolean(), nullable=False, default=False)
     create = db.Column(db.Boolean(), nullable=False, default=False)
+    admin = db.Column(db.Boolean(), nullable=True, default=False)
 
     def can_create(self):
         return self.create
