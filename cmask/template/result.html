@@ -34,13 +34,7 @@
         };
         $(document).ready(function(){
             //Build WebSocket
-            ws = new WebSocket('ws://127.0.0.1:8000/ws/{{ vote.id }}');
-            ws.onopen = function(){
-                console.log('Open WS')
-            }
-            ws.onclose = function(){
-                console.log('Close ws')
-            }
+            ws = new WebSocket('ws://{{ socket_url }}/ws/{{ vote.id }}');
 
             var slugs = {};
             //Chart
