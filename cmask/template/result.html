@@ -1,15 +1,24 @@
 {% extends('skeleton.html') %}
 
 {% block content %}
-    <h1>{{ vote.name }}</h1>
+    <div id="result">
+        <h1>{{ vote.name }}</h1>
 
-    <ul>
-        {% for opt in vote.options %}
-            <li>{{ opt.name }}(<span id="option-{{ opt.slug() }}">{{ opt.value }}</span>)</li>
-        {% endfor %}
-    </ul>
+        <div id="result-content">
+            <div id="canvas">
+                <canvas id="myChart" width="400" height="400"></canvas>
+            </div>
+            <div id="ul-content">
+                <ul>
+                    {% for opt in vote.options %}
+                        <li>{{ opt.name }} : <span class="option-result" id="option-{{ opt.slug() }}">{{ opt.value }}</span></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="clear"></div>
 
-    <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+    </div>
 
 
 
@@ -89,13 +98,13 @@
                     id = "#option-" + slug;
                     $(id).each(function(){
                         $(this).text(data['value']);
-                         for (i in myPieChart.segments){
-                             s = myPieChart.segments[i];
-                             if (slugs[data['slug']] == s.label){
-                                 s.value = data['value'];
-                                 myPieChart.update();
-                             }
-                         }
+                        for (i in myPieChart.segments){
+                            s = myPieChart.segments[i];
+                            if (slugs[data['slug']] == s.label){
+                                s.value = data['value'];
+                                myPieChart.update();
+                            }
+                        }
 
                     });
                 }

@@ -94,15 +94,21 @@ header nav ul li:hover a {
   display: none;
 }
 footer {
-  height: 60px;
+  height: 70px;
   /* Height of the footer */
-  padding: 0 25px;
+  padding: 0 0 0 25px;
   width: 100%;
   background: #EAEAEA;
+  clear: both;
+  -webkit-box-sizing: border-box;
+  /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;
+  /* Firefox, other Gecko */
+  box-sizing: border-box;
+  /* Opera/IE 8+ */
 }
 footer a {
   text-decoration: none;
-  color: #000000;
 }
 footer.forced {
   position: absolute;
@@ -111,7 +117,8 @@ footer.forced {
 input {
   position: relative;
 }
-input[type=text] {
+input[type=text],
+input[type=password] {
   height: 2em;
   min-width: 20%;
   margin: 15px auto;
@@ -125,6 +132,9 @@ input[type=checkbox] {
   width: 2em;
   height: 2em;
   vertical-align: middle;
+}
+input.btn {
+  padding: 5px 25px!important;
 }
 label {
   margin-right: 15px;
@@ -176,4 +186,49 @@ label {
   position: absolute;
   bottom: 15%;
   right: 2%;
+}
+#result {
+  position: relative;
+  margin: 0 auto;
+  display: block;
+}
+#result h1 {
+  text-align: center;
+  margin-bottom: 5%;
+}
+#result #result-content {
+  margin: 0 auto;
+  width: 70%;
+}
+#result #result-content #ul-content {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  float: right;
+  text-align: center;
+  vertical-align: middle;
+  width: 50%;
+  height: 400px;
+}
+#result #result-content #ul-content .option-result {
+  font-family: Montserrat-Bold, Montserrat, sans-serif;
+}
+#result #result-content #ul-content ul li {
+  display: inline-block;
+  margin: 5px auto;
+  width: 100%;
+  height: 1em;
+  list-style-position: inside;
+  vertical-align: middle;
+}
+#result #result-content #canvas {
+  padding: 0;
+  text-align: center;
+  width: 50%;
+  float: left;
+}
+#result #result-content #canvas canvas {
+  margin: 0 auto;
+  width: 400px;
+  height: 400px;
 }

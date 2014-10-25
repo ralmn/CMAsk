@@ -35,7 +35,7 @@
                 if($(this).val() != ''){
                     console.log('ok? ');
                     l =  $('.input_perso').length +1;
-                    $input = $('<input type="texte">');
+                    $input = $('<input type="text">');
                     $input.attr('id', 'perso' + l);
                     $input.attr('name', 'perso' + l);
                     $input.addClass('input_perso');
@@ -46,6 +46,11 @@
                     $div.append($label);
                     $div.append($input);
                     $("#personalized_input").append($div)
+                    if($(document).height() < screen.availHeight){
+                        $('footer').addClass('forced')
+                    }else{
+                        $('footer').removeClass('forced')
+                    }
 
                 }
             })

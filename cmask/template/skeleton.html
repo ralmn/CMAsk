@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>CMAsk</title>
-{#    <link rel="stylesheet" type="text/css" href="{{ url_for('views.static', filename='css/foundation.min.css') }}" />#}
+    {#    <link rel="stylesheet" type="text/css" href="{{ url_for('views.static', filename='css/foundation.min.css') }}" />#}
     <link rel="stylesheet/less" type="text/css" href="{{ url_for('views.static', filename='css/style.less') }}" />
     <script src="{{ url_for('views.static', filename='js/less.min.js') }}"></script>
     <script src="{{ url_for('views.static', filename='js/jquery-2.1.1.min.js') }}"></script>
@@ -18,8 +18,13 @@
             {% endif %}
             <li><a href="{{ url_for('views.questions') }}">Questions</a></li>
             {% if  current_user.is_authenticated() %}
-                <li class="nav-right"><a href="">{{ current_user.username }}</a></li>
                 <li class="nav-right"><a href="{{ url_for('user.logout') }}">Déconnexion</a></li>
+                <li class="nav-right"><a href="">{{ current_user.username }}</a></li>
+
+                {% if current_user.admin %}
+                    <li class="nav-right"><a href="{{ url_for('admin.index') }}">Admin</a></li>
+                {% endif %}
+                
             {% else %}
                 <li class="nav-right" ><a href="{{ url_for('user.login') }}">Connexion</a></li>
             {% endif %}
@@ -39,17 +44,23 @@
 
 
 <footer>
-    <p>©2014 - <a href="">Mathieu | Ralmn</a> </p>
+    <p>©2014 - <a href="http://ralmn.fr">Mathieu | Ralmn</a> </p>
+    <div id="cookie">
+        <p>En utilisant ce site, vous acceptez l’utilisation de Cookies.
+            <a href="http://www.cnil.fr/vos-obligations/sites-web-cookies-et-autres-traceurs/que-dit-la-loi/" target="_blank">Pour en savoir plus et paramétrer les traceurs</a>.
+        </p>
+    </div>
 </footer>
 
-{% block js_extra %}
-    <script>
+
+<script>
     $(document).ready(function(){
-         if($(document).height() < screen.availHeight){
-             $('footer').addClass('forced')
-         }
+        if($(document).height() < screen.availHeight){
+            $('footer').addClass('forced')
+        }
     });
-    </script>
+</script>
+{% block js_extra %}
 {% endblock %}
 
 </body>

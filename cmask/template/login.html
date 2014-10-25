@@ -5,30 +5,31 @@
 {% block content %}
 
 
-<div class="panel">
-	<h1>Connexion</h1>
-	{% if error %}
+    <div class="panel">
+        <div id="home">
+            <h1>Connexion</h1>
+            {% if error %}
 
-		<div data-alert class="alert-box alert">
-			{{ error }}
-			<a href="#" class="close">&times;</a>
-		</div>
+                <div data-alert class="alert-box alert">
+                    {{ error }}
+                    <a href="#" class="close">&times;</a>
+                </div>
 
 
-	{% endif %}
-	<form action="" method="post">
+            {% endif %}
+            <form action="" method="post">
 
-        {{ render_field(form.username) }}
-        {{ render_field(form.password) }}
-		<br>
-		{{ register_form.hidden_tag()  }}
+                {{ render_field(form.username) }}
+                {{ render_field(form.password) }}
+                <br>
+                {{ register_form.hidden_tag()  }}
 
-		<input class="button" type="submit">
+                <input class="button" type="submit">
 
-	</form>
-	<p><a href="">Pas encore de compte ? </a> <a href="/user/forgot-password">Mot de passe perdu ?</a></p>
+            </form>
+        </div>
 
-</div>
+    </div>
 
 
 
