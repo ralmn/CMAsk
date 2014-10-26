@@ -1,8 +1,10 @@
+{%  set app_name = getAppName()  %}
+
 <!doctype html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>CMAsk</title>
+    <title>{{ app_name }}</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('views.static', filename='css/style.css') }}" /> {#    <link rel="stylesheet/less" type="text/css" href="{{ url_for('views.static', filename='css/style.less') }}" />#}
 {#    <script src="{{ url_for('views.static', filename='js/less.min.js') }}"></script>#}
     <script src="{{ url_for('views.static', filename='js/jquery-2.1.1.min.js') }}"></script>
@@ -10,9 +12,9 @@
 <body>
 <header>
     <nav>
-        <a href='{{ url_for('views.index') }}' class="title">CMAsk</a>
+        <a href='{{ url_for('views.index') }}' class="title">{{ app_name }}</a>
         <ul>
-            {% if current_user.is_authenticated() and current_user.can_create() %}
+            {% if (current_user.is_authenticated() and current_user.can_create()) or getConfig()['ALLOW_CREATE_ALL'] == True %}
                 <li><a href="{{ url_for('views.create') }}">Creer question</a></li>
             {% endif %}
             <li><a href="{{ url_for('views.questions') }}">Questions</a></li>
@@ -26,6 +28,9 @@
                 
             {% else %}
                 <li class="nav-right" ><a href="{{ url_for('user.login') }}">Connexion</a></li>
+                {% if getConfig()['ALLOW_REGISTER'] == True %}
+                    <li class="nav-right" ><a href="{{ url_for('user.register') }}">Inscription</a></li>
+                {% endif %}
             {% endif %}
         </ul>
         <div class="clear"></div>

@@ -1,7 +1,7 @@
 from cmask.form import VoteForm
 from app import db, redis, app
 from flask import Blueprint, request, redirect, url_for
-from flask.ext.login import current_user
+from flask.ext.login import current_user, current_app
 from flask.templating import render_template
 from cmask.models import Vote, VoteOption
 from settings import REDIS_CHAN
@@ -16,11 +16,10 @@ def index():
 
 @mod.route('/create', methods=['get', 'post'])
 def create():
-    if not current_user.is_authenticated() or not current_user.can_create():
+    if (not current_user.is_authenticated() or not current_user.can_create()) and app.config['ALLOW_CREATE_ALL'] == False:
         return redirect(url_for('.questions'))
 
     form = VoteForm()
-    print(request.method)
     if request.method == 'POST' and form.validate():
         vote = Vote()
         vote.name = request.form['name']
@@ -74,8 +73,6 @@ def view(id):
 
     response = app.make_response(redirect(url_for('.result', id=id)))
     cookie = ('vote-'+id) in request.cookies
-    print('cookie=',request.cookies, cookie)
-
     if cookie:
         return redirect(url_for('.result', id=id))
 
@@ -92,14 +89,11 @@ def vote(id, option):
 
     response = app.make_response(redirect(url_for('.result', id=id)))
     cookie = ('vote-'+id) in request.cookies
-    print('cookie=',request.cookies, cookie)
 
     if not cookie:
         voteOption.value = voteOption.value +1
         db.session.commit()
-        print(voteOption.vote.name.encode('utf-8'))
         message = {'id':str(id),'slug':str(voteOption.slug()),'value':int(voteOption.value)}
-        print(message)
         redis.publish(REDIS_CHAN, message)
 
         response.set_cookie('vote-' + str(id), voteOption.slug())

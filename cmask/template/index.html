@@ -2,9 +2,11 @@
 {% extends('skeleton.html') %}
 {% block content %}
     <div id="home">
-        <h1>CMAsk</h1>
-        <p>Système de sondage réaliser en Python et grace aux WebSockets</p>
-        <p>Pour pouvoir creer des sondages merci de demande a un administrateur</p>
+        <h1>{{ app_name }}</h1>
+        <p>Système de sondage réalisé en Python et grâce aux WebSockets</p>
+        {% if getConfig()['ALLOW_CREATE_ALL'] != True %}
+            <p>Pour pouvoir créer des sondages, merci de demander à un administrateur.</p>
+        {% endif %}
 
     </div>
 

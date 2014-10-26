@@ -57,9 +57,7 @@ class VoteBackend(object):
     def run(self):
         """Listens for new messages in Redis, and sends them to clients."""
         for data in self.__iter_data():
-            print('data',data)
             data = ast.literal_eval(data)
-            print('data',data, data['id'])
             id = data['id']
             if id and id in self.clients:
                 for client in self.clients[id]:
@@ -74,7 +72,7 @@ class VoteBackend(object):
         """Maintains Redis subscription in the background."""
         gevent.spawn(self.run)
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='cmask/template',  static_folder='cmask/static')
 
 
 app.config.from_object(settings)
@@ -84,12 +82,15 @@ app.config.from_object(settings)
 app.config['USER_ENABLE_USERNAME']        = True              # Register and Login with username
 app.config['USER_ENABLE_EMAIL']           = True              # Register with email
 app.config['USER_ENABLE_CONFIRM_EMAIL']   = True              # Require email confirmation
-app.config['USER_ENABLE_CHANGE_USERNAME'] = True
-app.config['USER_ENABLE_CHANGE_PASSWORD'] = True
-app.config['USER_ENABLE_FORGOT_PASSWORD'] = True
+app.config['USER_ENABLE_CHANGE_USERNAME'] = False
+app.config['USER_ENABLE_CHANGE_PASSWORD'] = False
+app.config['USER_ENABLE_FORGOT_PASSWORD'] = False
+app.config['USER_ENABLE_REGISTRATION'] = app.config['ALLOW_REGISTER']
 app.config['USER_AFTER_LOGIN_ENDPOINT']   = 'views.index'
 app.config['USER_LOGIN_TEMPLATE']         = "login.html"
 app.config['USER_REGISTER_TEMPLATE']      = "register.html"
+app.config['USER_CONFIRM_EMAIL_EMAIL_TEMPLATE']      = "email/register_confirm.html"
+app.config['USER_APP_NAME']      = app.config['APP_NAME']
 
 db = SQLAlchemy(app)
 
@@ -132,6 +133,16 @@ class AdminCommand(Command):
 
 manager.add_command("admin", AdminCommand)
 
+def getAppName():
+  return app.config.get('APP_NAME')
+
+def getConfig():
+    return app.config
+
+@app.context_processor
+def utility_processor():
+
+    return dict(getAppName=getAppName, getConfig=getConfig)
 
 import cmask.socket
 

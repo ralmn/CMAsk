@@ -1,0 +1,7 @@
+{% extends "email/skeleton.html" %}
+
+{% block content %}
+<p>Merci pour votre inscription sur <b>{{ app_name }}</b> </p>
+<p>Vous pouvez desormais activer votre compte:</p>
+<p><a href="{{ confirm_email_link }}?next={{ url_for('base.init') }}">Activez votre compte</a>.</p>
+{% endblock %}
