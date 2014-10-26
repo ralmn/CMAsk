@@ -16,7 +16,7 @@ def index():
 
 @mod.route('/create', methods=['get', 'post'])
 def create():
-    if not current_user.is_authenticated() or not current_user.can_create():
+    if (not current_user.is_authenticated() or not current_user.can_create()) and app.config['ALLOW_CREATE_ALL'] == False:
         return redirect(url_for('.questions'))
 
     form = VoteForm()
