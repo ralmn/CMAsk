@@ -98,7 +98,7 @@ def vote(id, option):
         voteOption.value = voteOption.value +1
         db.session.commit()
         print(voteOption.vote.name.encode('utf-8'))
-        message = {'id':str(id),'slug':str(voteOption.slug()),'value':voteOption.value}
+        message = {'id':str(id),'slug':str(voteOption.slug()),'value':int(voteOption.value)}
         print(message)
         redis.publish(REDIS_CHAN, message)
 
