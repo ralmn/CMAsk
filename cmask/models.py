@@ -1,3 +1,4 @@
+# coding=utf-8
 from app import db, app, loginManager
 from flask.ext.user import UserMixin, SQLAlchemyAdapter, UserManager
 
@@ -20,7 +21,16 @@ class VoteOption(db.Model):
     vote = db.relationship('Vote', backref='options')
 
     def slug(self):
-        return self.name.replace(' ', '-')
+        ch1 = u"àâçéèêëîïôùûüÿ"
+        ch2 = u"aaceeeeiiouuuy"
+        s = ""
+        for c in self.name:
+            i = ch1.find(c)
+            if i>=0:
+                s += ch2[i]
+            else:
+                s += c
+        return s.replace(' ', '-')
 
     def __repr__(self):
         return '<VoteOption %s>' % self.name
