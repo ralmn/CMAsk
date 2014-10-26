@@ -122,7 +122,7 @@ class AdminCommand(Command):
     def run(self, addname = None):
         if addname is not None:
             from cmask.models import User
-            user = User.query.filter_by(name=addname).first()
+            user = User.query.filter_by(username=addname).first()
             if user is not None:
                 user.admin = True
                 db.session.commit()
