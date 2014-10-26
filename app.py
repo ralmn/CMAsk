@@ -135,7 +135,7 @@ manager.add_command("admin", AdminCommand)
 
 import cmask.socket
 
-if __name__ == '__main__' or __name__ == "uwsgi_file_cmask":
+if __name__ == '__main__' or __name__ == "uwsgi_file_app":
 
 
 
@@ -164,7 +164,7 @@ if __name__ == '__main__' or __name__ == "uwsgi_file_cmask":
 
 
     #Init
-    app.debug=True
+if __name__ == "__main__":
     manager.run(default_command='runserverprod')
     #app.run(port=5000, debug=True)
 
