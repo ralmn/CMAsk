@@ -4,7 +4,7 @@ SECRET_KEY = 'something secret'
 APP_NAME = 'CMAsk'
 
 ALLOW_REGISTER = True
-ALLOW_CREATE_ALL = True
+ALLOW_CREATE_ALL = False
 
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = 6379
