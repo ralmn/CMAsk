@@ -5,65 +5,65 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ app_name }}</title>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('views.static', filename='css/style.css') }}" /> {#    <link rel="stylesheet/less" type="text/css" href="{{ url_for('views.static', filename='css/style.less') }}" />#}
-{#    <script src="{{ url_for('views.static', filename='js/less.min.js') }}"></script>#}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('views.static', filename='css/style.css') }}" />
+        <link rel="stylesheet/less" type="text/css" href="{{ url_for('views.static', filename='css/style.less') }}" />
+        <script src="{{ url_for('views.static', filename='js/less.min.js') }}"></script>
     <script src="{{ url_for('views.static', filename='js/jquery-2.1.1.min.js') }}"></script>
 </head>
 <body>
-<header>
-    <nav>
-        <a href='{{ url_for('views.index') }}' class="title">{{ app_name }}</a>
-        <ul>
-            {% if (current_user.is_authenticated() and current_user.can_create()) or getConfig()['ALLOW_CREATE_ALL'] == True %}
-                <li><a href="{{ url_for('views.create') }}">Creer question</a></li>
-            {% endif %}
-            <li><a href="{{ url_for('views.questions') }}">Questions</a></li>
-            {% if  current_user.is_authenticated() %}
-                <li class="nav-right"><a href="{{ url_for('user.logout') }}">Déconnexion</a></li>
-                <li class="nav-right"><a href="">{{ current_user.username }}</a></li>
 
-                {% if current_user.admin %}
-                    <li class="nav-right"><a href="{{ url_for('admin.index') }}">Admin</a></li>
+<div class="wrapper">
+
+    <header>
+        <nav>
+            <a href='{{ url_for('views.index') }}' class="title">{{ app_name }}</a>
+            <ul>
+                {% if (current_user.is_authenticated() and current_user.can_create()) or getConfig()['ALLOW_CREATE_ALL'] == True %}
+                    <li><a href="{{ url_for('views.create') }}">Creer question</a></li>
                 {% endif %}
-                
-            {% else %}
-                <li class="nav-right" ><a href="{{ url_for('user.login') }}">Connexion</a></li>
-                {% if getConfig()['ALLOW_REGISTER'] == True %}
-                    <li class="nav-right" ><a href="{{ url_for('user.register') }}">Inscription</a></li>
+                <li><a href="{{ url_for('views.questions') }}">Questions</a></li>
+                {% if  current_user.is_authenticated() %}
+                    <li class="nav-right"><a href="{{ url_for('user.logout') }}">Déconnexion</a></li>
+                    <li class="nav-right"><a href="">{{ current_user.username }}</a></li>
+
+                    {% if current_user.admin %}
+                        <li class="nav-right"><a href="{{ url_for('admin.index') }}">Admin</a></li>
+                    {% endif %}
+
+                {% else %}
+                    <li class="nav-right" ><a href="{{ url_for('user.login') }}">Connexion</a></li>
+                    {% if getConfig()['ALLOW_REGISTER'] == True %}
+                        <li class="nav-right" ><a href="{{ url_for('user.register') }}">Inscription</a></li>
+                    {% endif %}
                 {% endif %}
-            {% endif %}
-        </ul>
-        <div class="clear"></div>
-    </nav>
-</header>
+            </ul>
+            <div class="clear"></div>
+        </nav>
+    </header>
 
-<div class="content">
+    <div class="content">
 
-    {% block content %}
+        {% block content %}
 
-    {%endblock%}
+        {%endblock%}
+
+    </div>
+
+
+
+    <footer>
+        <p>©2014 - <a href="http://ralmn.fr">Mathieu | Ralmn</a> </p>
+        <div id="cookie">
+            <p>En utilisant ce site, vous acceptez l’utilisation de Cookies.
+                <a href="http://www.cnil.fr/vos-obligations/sites-web-cookies-et-autres-traceurs/que-dit-la-loi/" target="_blank">Pour en savoir plus et paramétrer les traceurs</a>.
+            </p>
+        </div>
+    </footer>
 
 </div>
 
 
 
-<footer>
-    <p>©2014 - <a href="http://ralmn.fr">Mathieu | Ralmn</a> </p>
-    <div id="cookie">
-        <p>En utilisant ce site, vous acceptez l’utilisation de Cookies.
-            <a href="http://www.cnil.fr/vos-obligations/sites-web-cookies-et-autres-traceurs/que-dit-la-loi/" target="_blank">Pour en savoir plus et paramétrer les traceurs</a>.
-        </p>
-    </div>
-</footer>
-
-
-<script>
-    $(document).ready(function(){
-        if($(document).height() < screen.availHeight){
-            $('footer').addClass('forced')
-        }
-    });
-</script>
 {% block js_extra %}
 {% endblock %}
 
