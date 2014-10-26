@@ -9,12 +9,13 @@
 }
 
 
-body{
+html, body{
   padding: 0;
   margin: 0;
   font-family: Montserrat, sans-serif;
   background: #fff;
   font-size: 16px;
+  height: 100%;
 
 }
 
@@ -101,8 +102,13 @@ header{
       font-size: 5em;
     }
   }
-}
+  padding-bottom: 5rem;
 
+}
+.wrapper{
+  position: relative;
+  min-height: 100%;
+}
 #personalized_input{
   display: none;
 }
@@ -110,12 +116,14 @@ header{
 
 
 footer{
-  height:70px;   /* Height of the footer */
-  padding: 0 0 0 25px;
+  height: 5rem;   /* Height of the footer */
+  padding: 2px 0 0 25px;
   width: 100%;
   background: #EAEAEA;
   clear: both;
-
+  position: absolute;
+  bottom: 0;
+  left: 0;
 
   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
@@ -125,10 +133,10 @@ footer{
     text-decoration: none;
     //    color: #000000;
   }
-  &.forced{
-    position:absolute;
-    bottom:0;
-  }
+  //  &.forced{
+  //    position:absolute;
+  //    bottom:0;
+  //  }
 }
 
 
@@ -320,9 +328,5 @@ label{
 
   footer {
     font-size: 0.5em;
-    height: auto;
-    &.forced{
-      position: relative;
-    }
   }
 }

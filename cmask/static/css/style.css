@@ -6,12 +6,14 @@
   font-family: Montserrat;
   src: url(../fonts/Montserrat-Regular.ttf);
 }
+html,
 body {
   padding: 0;
   margin: 0;
   font-family: Montserrat, sans-serif;
   background: #fff;
   font-size: 16px;
+  height: 100%;
 }
 h1,
 h2,
@@ -84,22 +86,32 @@ header nav ul li:hover a {
 .clear {
   clear: both;
 }
+.content {
+  padding-bottom: 5rem;
+}
 .content #home {
   text-align: center;
 }
 .content #home h1 {
   font-size: 5em;
 }
+.wrapper {
+  position: relative;
+  min-height: 100%;
+}
 #personalized_input {
   display: none;
 }
 footer {
-  height: 70px;
+  height: 5rem;
   /* Height of the footer */
-  padding: 0 0 0 25px;
+  padding: 2px 0 0 25px;
   width: 100%;
   background: #EAEAEA;
   clear: both;
+  position: absolute;
+  bottom: 0;
+  left: 0;
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
   -moz-box-sizing: border-box;
@@ -109,10 +121,6 @@ footer {
 }
 footer a {
   text-decoration: none;
-}
-footer.forced {
-  position: absolute;
-  bottom: 0;
 }
 input {
   position: relative;
@@ -275,9 +283,5 @@ label {
   }
   footer {
     font-size: 0.5em;
-    height: auto;
-  }
-  footer.forced {
-    position: relative;
   }
 }
