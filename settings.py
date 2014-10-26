@@ -31,4 +31,4 @@ SOCKET_HOST = '127.0.0.1:8000'
 
 #SQLLite : "sqlite:////home/path/of/database"
 #MySQL : "mysql://user:pass@127.0.0.1/base"
-SQLALCHEMY_DATABASE_URI = ''
+SQLALCHEMY_DATABASE_URI = 'sqlite:////home/ralmn/questionLive.db'
