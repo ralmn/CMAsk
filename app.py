@@ -57,9 +57,7 @@ class VoteBackend(object):
     def run(self):
         """Listens for new messages in Redis, and sends them to clients."""
         for data in self.__iter_data():
-            print('data',data)
             data = ast.literal_eval(data)
-            print('data',data, data['id'])
             id = data['id']
             if id and id in self.clients:
                 for client in self.clients[id]:
