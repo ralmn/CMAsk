@@ -30,7 +30,13 @@ class VoteOption(db.Model):
                 s += ch2[i]
             else:
                 s += c
-        return s.replace(' ', '-')
+        return s.replace(' ', '-').replace('"','\\"')
+
+    def getName(self):
+        import HTMLParser
+        parser = HTMLParser.HTMLParser()
+        s =  parser.unescape(self.name)
+        return s.replace('"','\\"')
 
     def __repr__(self):
         return '<VoteOption %s>' % self.name
