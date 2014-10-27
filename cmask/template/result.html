@@ -54,9 +54,9 @@
                 //String - Animation easing effect
                 animationEasing : "easeOutBounce",
                 //Boolean - Whether we animate the rotation of the Doughnut
-                animateRotate : false,
+                animateRotate : true,
                 //Boolean - Whether we animate scaling the Doughnut from the centre
-                animateScale : false,
+                animateScale : true,
                 legendTemplate: '{{ legendTemplate|safe }}'
             };
 
@@ -73,8 +73,8 @@
             }
 
             {% for opt in vote.options %}
-                oData = {label:"{{ opt.name }}", value:{{ opt.value }}, color:getRandomColor(), highlight:getRandomColor(), name:"{{ opt.slug() }}" };
-                slugs["{{ opt.slug() }}"] = "{{ opt.name }}";
+                oData = {label:"{{ opt.getName()|safe }}", value:{{ opt.value }}, color:getRandomColor(), highlight:getRandomColor()};
+                slugs["{{ opt.slug()|safe }}"] = "{{ opt.getName() }}";
                 data.push(oData);
             {% endfor %}
 
