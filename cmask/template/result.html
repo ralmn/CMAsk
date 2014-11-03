@@ -11,7 +11,7 @@
             <div id="ul-content">
                 <ul>
                     {% for opt in vote.options %}
-                        <li>{{ opt.name }} : <span class="option-result" id="option-{{ opt.slug() }}">{{ opt.value }}</span></li>
+                        <li>{{ opt.name }} : <span class="option-result" id="option-{{ opt.id }}">{{ opt.value }}</span></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -28,6 +28,7 @@
 {% block js_extra %}
     <script src="{{ url_for('.static', filename='js/Chart.min.js') }}"></script>
     <script>
+
         String.prototype.replaceAll = function (find, replace) {
             var str = this ;
             return str.replace(new RegExp(find, 'g'), replace);
@@ -84,17 +85,20 @@
 
             //WebSocket Packet
             ws.onmessage = function(packet){
+                console.log(packet)
                 strData = packet['data'];
                 strData = strData.replaceAll("'",'"');
                 data = jQuery.parseJSON(strData);
                 if(data !== undefined){
                     slug = data['slug'];
-                    id = "#option-" + slug;
+                    did = data['did'];
+                    id = "#option-" + did;
                     $(id).each(function(){
                         $(this).text(data['value']);
                         for (i in myPieChart.segments){
                             s = myPieChart.segments[i];
-                            if (slugs[data['slug']] == s.label){
+                            gSlug = $('<div />').html(slugs[data['slug']]).text(); //get good text format
+                            if (gSlug == s.label){
                                 s.value = data['value'];
                                 myPieChart.update();
                             }
