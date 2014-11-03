@@ -1,6 +1,6 @@
 from cmask.form import VoteForm
 from app import db, redis, app
-from flask import Blueprint, request, redirect, url_for
+from flask import Blueprint, request, redirect, url_for, flash
 from flask.ext.login import current_user, current_app
 from flask.templating import render_template
 from cmask.models import Vote, VoteOption
@@ -10,7 +10,7 @@ mod = Blueprint('views', __name__, template_folder='template', static_folder='st
 
 
 @mod.route('/')
-def index(): 
+def index():
     return render_template('index.html')
 
 
@@ -44,28 +44,38 @@ def create():
             db.session.add(vFalse)
             db.session.add(vTrue)
             db.session.commit()
-
         else:
+            count = 0
             for elem in request.form:
                 if 'perso' in elem and not elem == 'personalized':
                     if request.form.get(elem) != '':
+                        count += 1
                         opt = VoteOption()
                         opt.name = request.form.get(elem)
                         opt.vote = vote
                         db.session.add(opt)
-                        db.session.commit()
+
+            if count >= 2:
+                db.session.commit()
+            else:
+                db.session.rollback()
+                db.session.delete(vote)
+                db.session.commit()
+                flash('Minimum 2 choix a indiquer ! ', 'error')
+                return render_template('create.html', **locals())
+
 
         return redirect(url_for('.view', id=vote.id))
 
-    
+
     return render_template('create.html', **locals())
 
 @mod.route('/questions')
 def questions():
     votes = Vote.query.all()
-    
+
     return render_template('questions.html', **locals())
-    
+
 
 @mod.route('/<id>')
 def view(id):
@@ -102,7 +112,7 @@ def vote(id, option):
 
 
 @mod.route('/<id>/result')
-def result(id): 
+def result(id):
     vote = Vote.query.filter_by(id=id).first_or_404()
     socket_url = app.config['SOCKET_HOST']
     legendTemplate = "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
