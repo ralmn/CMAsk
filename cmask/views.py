@@ -93,7 +93,7 @@ def vote(id, option):
     if not cookie:
         voteOption.value = voteOption.value +1
         db.session.commit()
-        message = {'id':str(id),'slug':str(voteOption.slug()),'value':int(voteOption.value)}
+        message = {"id":str(id),"slug":str(voteOption.slug()),"value":int(voteOption.value), 'did':voteOption.id}
         redis.publish(REDIS_CHAN, message)
 
         response.set_cookie('vote-' + str(id), voteOption.slug())

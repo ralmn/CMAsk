@@ -30,7 +30,8 @@ class VoteOption(db.Model):
                 s += ch2[i]
             else:
                 s += c
-        return s.replace(' ', '-').replace('"','\\"')
+        slug = s.replace(' ', '-').replace("'",'-').replace('"','-')
+        return slug
 
     def getName(self):
         import HTMLParser
@@ -59,3 +60,4 @@ class User(db.Model, UserMixin):
 
 db_adapter = SQLAlchemyAdapter(db, User)
 user_manager = UserManager(db_adapter=db_adapter,login_manager=loginManager, app=app)     # Init Flask-User and bind to app
+
