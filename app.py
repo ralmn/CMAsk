@@ -8,6 +8,7 @@ from flask.ext.script import Manager, Command, Server, Option
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask_sockets import Sockets
 from flask.ext.sqlalchemy import SQLAlchemy
+from raven.contrib.flask import Sentry
 import settings
 import redis
 import gevent
@@ -93,6 +94,9 @@ app.config['USER_CONFIRM_EMAIL_EMAIL_TEMPLATE']      = "email/register_confirm.h
 app.config['USER_APP_NAME']      = app.config['APP_NAME']
 
 db = SQLAlchemy(app)
+
+if settings.USE_SENTRY:
+    sentry = Sentry(app)
 
 sockets = Sockets(app)
 
