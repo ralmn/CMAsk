@@ -178,7 +178,20 @@ if __name__ == '__main__' or __name__ == "uwsgi_file_app":
     manager.add_command('db', MigrateCommand)
 
 
-    #Init
+def classesinmodule(module):
+    md = module.__dict__
+    return [
+        md[c] for c in md if (
+            isinstance(md[c], type) and md[c].__module__ == module.__name__
+        )
+    ]
+
+@app.before_request
+def before():
+    classes = classesinmodule(cmask.models)
+    for cls in classes:
+        cls.query.session.close()
+
 if __name__ == "__main__":
     manager.run(default_command='runserverprod')
     #app.run(port=5000, debug=True)
