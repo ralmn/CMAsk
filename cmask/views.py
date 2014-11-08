@@ -34,14 +34,14 @@ def create():
         if closed:
             dateNow = datetime.datetime.now()
             startTime = request.form.get('openTime') if str(request.form.get('openTime')) is not None and request.form.get('openTime') != '' else dateNow.strftime('%I:%M%p')
-            startDate = request.form.get('openDate') if str(request.form.get('openDate')) is not None and request.form.get('openDate') != '' else dateNow.strftime('%Y-%m-%d')
+            startDate = request.form.get('openDate') if str(request.form.get('openDate')) is not None and request.form.get('openDate') != '' and request.form.get('openDate') != 'NaN-NaN-NaN' else dateNow.strftime('%Y-%m-%d')
 
 
             start = str(startDate + ' ' + startTime)
             startDate = datetime.datetime.strptime(start, '%Y-%m-%d %I:%M%p')
 
             dateMore = startDate + datetime.timedelta(hours=1)
-            endtDate = request.form.get('closeDate') if request.form.get('closeDate') is not None and request.form.get('closeDate') != '' else dateMore.strftime('%Y-%m-%d')
+            endtDate = request.form.get('closeDate') if request.form.get('closeDate') is not None and request.form.get('closeDate') != '' and request.form.get('closeDate') != 'NaN-NaN-NaN' else dateMore.strftime('%Y-%m-%d')
             endTime = request.form.get('closeTime') if request.form.get('closeTime') is not None and request.form.get('closeTime') != '' else dateMore.strftime('%I:%M%p')
             end = str(endtDate + ' ' + endTime)
             endDate = datetime.datetime.strptime(end, '%Y-%m-%d %I:%M%p')
