@@ -48,11 +48,9 @@
             new QRCode(document.getElementById("qrcode"), "{{ url_for('.view',id=vote.id ,_external=True) }}");
 
             $('#qrcode-toggle').click(function(){
-                if ($content.is(":visible")){
-                    $content.hide();œ
-                }else{
-                    $content.show();
-                }
+                $('#content-qrcode').slideToggle(1000, function(){
+                    $('body').scrollTo('#content-qrcode');
+                });
                 return false;
             });
 
