@@ -220,7 +220,8 @@ label {
   margin: 0 auto;
   display: block;
 }
-#result h1 {
+#result h1,
+#result h2 {
   text-align: center;
   margin-bottom: 5%;
 }
