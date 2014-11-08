@@ -192,8 +192,9 @@ label {
 .bottom-right {
   z-index: 5;
   position: absolute;
-  bottom: 15%;
-  right: 2%;
+  bottom: 7em;
+  right: 2em;
+  display: inline-block;
 }
 #result {
   position: relative;
@@ -239,6 +240,15 @@ label {
   margin: 0 auto;
   width: 400px;
   height: 400px;
+}
+#content-qrcode {
+  display: none;
+  width: 100%;
+  margin: 3em 0;
+}
+#content-qrcode #qrcode {
+  width: 256px;
+  margin: 2em auto;
 }
 @media all and (max-width: 865px) {
   header nav {

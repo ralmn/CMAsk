@@ -92,8 +92,6 @@ def view(id):
 @mod.route('/<id>/vote/<option>')
 def vote(id, option):
 
-
-
     db.session.flush()
     voteOption = VoteOption.query.filter_by(id=option).first_or_404()
 
@@ -116,5 +114,6 @@ def result(id):
     vote = Vote.query.filter_by(id=id).first_or_404()
     socket_url = app.config['SOCKET_HOST']
     legendTemplate = "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+
 
     return render_template('result.html', **locals())

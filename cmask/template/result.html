@@ -19,6 +19,16 @@
 
         </div>
     </div>
+    <div id="content-qrcode">
+        <div id="qrcode">
+        </div>
+    </div>
+
+    <div class="bottom-right">
+        <a class="btn red" id="qrcode-toggle" href="#">QRCODE</a>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
 
 
 
@@ -27,6 +37,7 @@
 
 {% block js_extra %}
     <script src="{{ url_for('.static', filename='js/Chart.min.js') }}"></script>
+    <script src="{{ url_for('.static', filename='js/qrcode.js') }}"></script>
     <script>
 
         String.prototype.replaceAll = function (find, replace) {
@@ -34,6 +45,17 @@
             return str.replace(new RegExp(find, 'g'), replace);
         };
         $(document).ready(function(){
+            new QRCode(document.getElementById("qrcode"), "{{ url_for('.view',id=vote.id ,_external=True) }}");
+
+            $('#qrcode-toggle').click(function(){
+                if ($content.is(":visible")){
+                    $content.hide();œ
+                }else{
+                    $content.show();
+                }
+                return false;
+            });
+
             //Build WebSocket
             ws = new WebSocket('ws://{{ socket_url }}/ws/{{ vote.id }}');
 
@@ -63,7 +85,6 @@
 
 
             var ctx = document.getElementById("myChart").getContext("2d");
-            console.log(ctx);
             function getRandomColor() {
                 var letters = '0123456789ABCDEF'.split('');
                 var color = '#';
@@ -79,13 +100,10 @@
                 data.push(oData);
             {% endfor %}
 
-            console.log(data);
             var myPieChart = new Chart(ctx).Pie(data,options);
-            console.log(myPieChart);
 
             //WebSocket Packet
             ws.onmessage = function(packet){
-                console.log(packet)
                 strData = packet['data'];
                 strData = strData.replaceAll("'",'"');
                 data = jQuery.parseJSON(strData);
