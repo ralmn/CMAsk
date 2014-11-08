@@ -128,9 +128,9 @@ def vote(id, option):
 
     response = app.make_response(redirect(url_for('.result', id=id)))
     cookie = ('vote-'+id) in request.cookies
-    if vote.close is not None and vote.close < datetime.datetime.now():
+    if voteOption.vote.close is not None and voteOption.vote.close < datetime.datetime.now():
         return redirect(url_for('.result', id=id))
-    if vote.open is not None and vote.open > datetime.datetime.now():
+    if voteOption.vote.open is not None and voteOption.vote.open > datetime.datetime.now():
         return redirect(url_for('.view', id=id))
     if not cookie:
         voteOption.value = voteOption.value +1
