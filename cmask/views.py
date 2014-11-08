@@ -21,6 +21,9 @@ def create():
 
     form = VoteForm()
     if request.method == 'POST' and form.validate():
+        if request.form['name'] =='':
+            flash('Vous devez indiquer le nom ', 'error')
+            return render_template('create.html', **locals())
         vote = Vote()
         vote.name = request.form['name']
         p = request.form.get('personalized') if True is not None else False
@@ -29,7 +32,6 @@ def create():
             if p == 'y':
                 pe = True
 
-        vote.personalized = pe
         db.session.add(vote)
         db.session.commit()
         if not pe:
