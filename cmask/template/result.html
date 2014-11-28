@@ -3,7 +3,11 @@
 {% block content %}
     <div id="result">
         <h1>{{ vote.name }}</h1>
-
+        {% if vote.close %}
+            <h2 class="vote-close">
+                Fermeture <span id="time" data-ts="{{ vote.closeTS() }}">à {{ vote.close }}</span>
+            </h2>
+        {% endif %}
         <div id="result-content">
             <div id="canvas">
                 <canvas id="myChart" width="400" height="400"></canvas>
@@ -19,6 +23,16 @@
 
         </div>
     </div>
+    <div id="content-qrcode">
+        <div id="qrcode">
+        </div>
+    </div>
+
+    <div class="bottom-right">
+        <a class="btn red" id="qrcode-toggle" href="#">QRCODE</a>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
 
 
 
@@ -27,6 +41,7 @@
 
 {% block js_extra %}
     <script src="{{ url_for('.static', filename='js/Chart.min.js') }}"></script>
+    <script src="{{ url_for('.static', filename='js/qrcode.js') }}"></script>
     <script>
 
         String.prototype.replaceAll = function (find, replace) {
@@ -34,6 +49,15 @@
             return str.replace(new RegExp(find, 'g'), replace);
         };
         $(document).ready(function(){
+            new QRCode(document.getElementById("qrcode"), "{{ url_for('.view',id=vote.id ,_external=True) }}");
+
+            $('#qrcode-toggle').click(function(){
+                $('#content-qrcode').slideToggle(1000, function(){
+                    $('body').scrollTo('#content-qrcode');
+                });
+                return false;
+            });
+
             //Build WebSocket
             ws = new WebSocket('ws://{{ socket_url }}/ws/{{ vote.id }}');
 
@@ -63,7 +87,6 @@
 
 
             var ctx = document.getElementById("myChart").getContext("2d");
-            console.log(ctx);
             function getRandomColor() {
                 var letters = '0123456789ABCDEF'.split('');
                 var color = '#';
@@ -79,13 +102,10 @@
                 data.push(oData);
             {% endfor %}
 
-            console.log(data);
             var myPieChart = new Chart(ctx).Pie(data,options);
-            console.log(myPieChart);
 
             //WebSocket Packet
             ws.onmessage = function(packet){
-                console.log(packet)
                 strData = packet['data'];
                 strData = strData.replaceAll("'",'"');
                 data = jQuery.parseJSON(strData);
@@ -107,6 +127,39 @@
                     });
                 }
             }
+
+            function component(x, v) {
+                return Math.floor(x / v);
+            }
+            setInterval(function(){
+                $('#time[data-ts]').each(function () {
+                    t = $(this).attr('data-ts');
+                    dt = new Date(t*1000);
+                    now = new Date();
+                    diff = component(dt - now,1000);
+                    if (diff < 0){
+                        $(this).parent().text('Fermer');
+                        return
+                    }
+                    var time = '';
+                    var days    = component(diff, 24 * 60 * 60),      // calculate days from timestamp
+                            hours   = component(diff,      60 * 60) % 24, // hours
+                            minutes = component(diff,           60) % 60, // minutes
+                            seconds = component(diff,            1) % 60; // seconds
+                    if (days > 0){
+                        time += days + 'j '
+                    }
+                    if (hours > 0){
+                        time += hours + 'h '
+                    }
+                    if (minutes > 0){
+                        time += minutes + 'm '
+                    }
+                    time += seconds + 's ';
+                    $(this).text('dans ' + time);
+
+                })
+            }, 1000)
 
         });
 

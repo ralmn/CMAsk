@@ -5,25 +5,10 @@
         <h1 class="vote-name">{{vote.name}}</h1>
         {% if vote.close %}
             <h2 class="vote-close">
-               Fermeture <span id="time" data-ts="{{ vote.closeTS() }}">à {{ vote.close }}</span>
+               Ouverture <span id="time" data-ts="{{ vote.openTS() }}">à {{ vote.open }}</span>
             </h2>
         {% endif %}
-        <div class="option-div">
-            {% for voteO in vote.options %}
-                <a class="options" href="{{ url_for('.vote', id=vote.id, option=voteO.id)}}">{{voteO.name}}</a>
-            {% endfor %}
-
-            <div class="clear"></div>
-
-        </div>
-
     </div>
-    <div class="bottom-right">
-        <a class="btn red" href="{{ url_for('.result',id=vote.id) }}">Result</a>
-        <div class="clear"></div>
-    </div>
-
-    <div class="clear"></div>
 
 {%endblock%}
 {% block js_extra %}
@@ -60,6 +45,9 @@
 
                 })
             }, 1000)
+
+
+
 
         });
     </script>

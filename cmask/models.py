@@ -1,4 +1,5 @@
 # coding=utf-8
+import time
 from app import db, app, loginManager
 from flask.ext.user import UserMixin, SQLAlchemyAdapter, UserManager
 
@@ -8,10 +9,15 @@ __author__ = 'ralmn'
 class Vote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
-    personalized = db.Column(db.Boolean, default=False)
+    close = db.Column(db.DATETIME, nullable=True)
+    open = db.Column(db.DATETIME, nullable=True)
     def __repr__(self):
         return '<Vote %s>' % self.name
 
+    def closeTS(self):
+        return int(time.mktime(self.close.timetuple()))
+    def openTS(self):
+        return int(time.mktime(self.open.timetuple()))
 
 class VoteOption(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -40,7 +46,7 @@ class VoteOption(db.Model):
         return s.replace('"','\\"')
 
     def __repr__(self):
-        return '<VoteOption %s>' % self.name
+        return '<VoteOption %s %s>' % (self.vote.name, self.name)
 
 
 

@@ -1,3 +1,4 @@
+import datetime
 from cmask.form import VoteForm
 from app import db, redis, app
 from flask import Blueprint, request, redirect, url_for, flash
@@ -21,15 +22,39 @@ def create():
 
     form = VoteForm()
     if request.method == 'POST' and form.validate():
+        if request.form['name'] =='':
+            flash('Vous devez indiquer le nom ', 'error')
+            return render_template('create.html', **locals())
         vote = Vote()
         vote.name = request.form['name']
         p = request.form.get('personalized') if True is not None else False
-        pe = False
+        closed = request.form.get('closed') if True is not None else False
+
+        #traitement date/time debut/fin
+        if closed:
+            dateNow = datetime.datetime.now()
+            startTime = request.form.get('openTime') if str(request.form.get('openTime')) is not None and request.form.get('openTime') != '' else dateNow.strftime('%I:%M%p')
+            startDate = request.form.get('openDate') if str(request.form.get('openDate')) is not None and request.form.get('openDate') != '' and request.form.get('openDate') != 'NaN-NaN-NaN' else dateNow.strftime('%Y-%m-%d')
+
+
+            start = str(startDate + ' ' + startTime)
+            startDate = datetime.datetime.strptime(start, '%Y-%m-%d %I:%M%p')
+
+            dateMore = startDate + datetime.timedelta(hours=1)
+            endtDate = request.form.get('closeDate') if request.form.get('closeDate') is not None and request.form.get('closeDate') != '' and request.form.get('closeDate') != 'NaN-NaN-NaN' else dateMore.strftime('%Y-%m-%d')
+            endTime = request.form.get('closeTime') if request.form.get('closeTime') is not None and request.form.get('closeTime') != '' else dateMore.strftime('%I:%M%p')
+            end = str(endtDate + ' ' + endTime)
+            endDate = datetime.datetime.strptime(end, '%Y-%m-%d %I:%M%p')
+            vote.close =endDate
+            vote.open =startDate
+
+
+
+        pe = True
         if type(p) == str or type(p) == unicode:
             if p == 'y':
-                pe = True
+                pe = False
 
-        vote.personalized = pe
         db.session.add(vote)
         db.session.commit()
         if not pe:
@@ -81,6 +106,12 @@ def questions():
 def view(id):
     vote = Vote.query.filter_by(id=id).first_or_404()
 
+    if vote.open is not None and vote.open > datetime.datetime.now():
+        return render_template('view-open.html', **locals())
+
+    if vote.close is not None and vote.close < datetime.datetime.now():
+        return redirect(url_for('.result', id=id))
+
     response = app.make_response(redirect(url_for('.result', id=id)))
     cookie = ('vote-'+id) in request.cookies
     if cookie:
@@ -92,18 +123,19 @@ def view(id):
 @mod.route('/<id>/vote/<option>')
 def vote(id, option):
 
-
-
     db.session.flush()
     voteOption = VoteOption.query.filter_by(id=option).first_or_404()
 
     response = app.make_response(redirect(url_for('.result', id=id)))
     cookie = ('vote-'+id) in request.cookies
-
+    if voteOption.vote.close is not None and voteOption.vote.close < datetime.datetime.now():
+        return redirect(url_for('.result', id=id))
+    if voteOption.vote.open is not None and voteOption.vote.open > datetime.datetime.now():
+        return redirect(url_for('.view', id=id))
     if not cookie:
         voteOption.value = voteOption.value +1
         db.session.commit()
-        message = {"id":str(id),"slug":str(voteOption.slug()),"value":int(voteOption.value), 'did':voteOption.id}
+        message = {"id":str(id),"slug":str(voteOption.slug()),"value":int(voteOption.value), 'did':int(voteOption.id)}
         redis.publish(REDIS_CHAN, message)
 
         response.set_cookie('vote-' + str(id), voteOption.slug())
@@ -114,7 +146,10 @@ def vote(id, option):
 @mod.route('/<id>/result')
 def result(id):
     vote = Vote.query.filter_by(id=id).first_or_404()
+    if vote.open is not None and vote.open > datetime.datetime.now():
+        return redirect(url_for('.view', id=id))
     socket_url = app.config['SOCKET_HOST']
     legendTemplate = "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+
 
     return render_template('result.html', **locals())

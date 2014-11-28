@@ -8,6 +8,7 @@ from flask.ext.script import Manager, Command, Server, Option
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask_sockets import Sockets
 from flask.ext.sqlalchemy import SQLAlchemy
+from raven.contrib.flask import Sentry
 import settings
 import redis
 import gevent
@@ -94,6 +95,9 @@ app.config['USER_APP_NAME']      = app.config['APP_NAME']
 
 db = SQLAlchemy(app)
 
+if settings.USE_SENTRY:
+    sentry = Sentry(app)
+
 sockets = Sockets(app)
 
 redis = redis.from_url(settings.BROKER_URL)
@@ -174,7 +178,20 @@ if __name__ == '__main__' or __name__ == "uwsgi_file_app":
     manager.add_command('db', MigrateCommand)
 
 
-    #Init
+def classesinmodule(module):
+    md = module.__dict__
+    return [
+        md[c] for c in md if (
+            isinstance(md[c], type) and md[c].__module__ == module.__name__
+        )
+    ]
+
+@app.before_request
+def before():
+    classes = classesinmodule(cmask.models)
+    for cls in classes:
+        cls.query.session.close()
+
 if __name__ == "__main__":
     manager.run(default_command='runserverprod')
     #app.run(port=5000, debug=True)

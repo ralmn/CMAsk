@@ -9,9 +9,18 @@
             <dl>
                 {{ render_field(form.name) }}
                 {{ render_field(form.personalized) }}
+                {{ render_field(form.closed, id='closedInput') }}
             </dl>
             <dl id="personalized_input">
                 <label for="perso1">Choix 1 </label><input type="text" class="input_perso" name="perso1" id="perso1"/>
+            </dl>
+            <dl id="closed_input">
+                de {{ form.openDate(class='date start') }}
+                {{ form.openTime(class='time start') }} à
+                {{ form.closeTime(class='time end') }}
+                {{ form.closeDate(class='date end') }}
+
+                <P><small>Si début vide = Maintenant, si fin vide = début + 1h</small></P>
             </dl>
             <p><input type="submit" class="btn" value="Creer">
         </form>
@@ -19,17 +28,48 @@
     </div>
 {%endblock%}
 
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('views.static', filename='js/timepicker/jquery.timepicker.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('views.static', filename='js/timepicker/lib/bootstrap-datepicker.css') }}" />
+{% endblock %}
 
 {% block js_extra %}
+    <script src="{{ url_for('views.static', filename='js/timepicker/jquery.timepicker.js') }}"></script>
+    <script src="{{ url_for('views.static', filename='js/timepicker/lib/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ url_for('views.static', filename='js/timepicker/datepair.js') }}"></script>
+    <script src="{{ url_for('views.static', filename='js/timepicker/jquery.datepair.js') }}"></script>
     <script>
         $(document).ready(function(){
             $('#create_form').find('input[name="personalized"]').change(function(){
-                if(this.checked){
+                if(!this.checked){
                     $('#personalized_input').show();
                 }else{
                     $('#personalized_input').hide();
                 }
-            })
+            });
+            $('#create_form').find('input#closedInput').change(function(){
+                if(this.checked){
+                    $('#closed_input').show();
+                }else{
+                    $('#closed_input').hide();
+                }
+            });
+
+            $('#closed_input .time').timepicker({
+                'showDuration': true,
+                'timeFormat': 'g:ia'
+            });
+            $('#closed_input .date').datepicker({
+                'format': 'yyyy-m-d',
+                'autoclose': true
+
+            });
+
+
+            // initialize datepair
+            $('#closed_input').datepair();
+
+
             $(document).on("keydown",'.input_perso:last',function(){
                 console.log($(this).val());
                 if($(this).val() != ''){
