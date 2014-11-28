@@ -41,7 +41,7 @@
     <script>
         $(document).ready(function(){
             $('#create_form').find('input[name="personalized"]').change(function(){
-                if(this.checked){
+                if(!this.checked){
                     $('#personalized_input').show();
                 }else{
                     $('#personalized_input').hide();
