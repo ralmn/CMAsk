@@ -50,10 +50,10 @@ def create():
 
 
 
-        pe = False
+        pe = True
         if type(p) == str or type(p) == unicode:
             if p == 'y':
-                pe = True
+                pe = False
 
         db.session.add(vote)
         db.session.commit()

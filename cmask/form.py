@@ -3,7 +3,7 @@ from cmask.models import Vote
 
 class VoteForm(Form):
     name = StringField('Nom du vote')
-    personalized = BooleanField("Mode Vrai/Faux")
+    personalized = BooleanField("Mode Vrai/Faux", default=True)
     closed = BooleanField('Ouverture et fermeture automatique')
     openDate = StringField('')
     openTime = StringField('')
